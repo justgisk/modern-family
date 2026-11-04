@@ -1,0 +1,1104 @@
+:root {
+  --cream: #fff4dc;
+  --ink: #3b2f24;
+  --muted: #7a6a58;
+  --card: #fffaf0;
+  font-family: "Fredoka", ui-rounded, "SF Pro Rounded", system-ui, sans-serif;
+  color: var(--ink);
+  -webkit-tap-highlight-color: transparent;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: #e9dcc2;
+  overscroll-behavior: none;
+  touch-action: manipulation;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.app {
+  position: relative;
+  max-width: 430px;
+  height: 100dvh;
+  margin: 0 auto;
+  overflow: hidden;
+  background: var(--cream);
+  box-shadow: 0 0 60px rgba(60, 40, 10, 0.18);
+}
+
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- placeholder art ---------- */
+.ph {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--tint) 62%, transparent);
+  border: 2px dashed rgba(59, 47, 36, 0.4);
+  border-radius: 16px;
+  padding: 6px;
+  text-align: center;
+  overflow: hidden;
+}
+.ph span {
+  font-size: 10px;
+  line-height: 1.25;
+  font-weight: 500;
+  color: rgba(40, 30, 20, 0.78);
+  word-break: break-word;
+}
+.fill {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.ph.fill {
+  border-radius: 0;
+  border: 0;
+  align-content: start;
+  justify-items: start;
+  padding: 56px 14px;
+}
+
+/* ---------- top bar ---------- */
+.topbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: calc(env(safe-area-inset-top, 0px) + 14px) 14px 8px;
+}
+.pill {
+  border: 0;
+  border-radius: 999px;
+  padding: 8px 14px;
+  background: rgba(255, 250, 240, 0.92);
+  box-shadow: 0 2px 10px rgba(60, 40, 10, 0.15);
+  font-weight: 600;
+  font-size: 14px;
+}
+.topbar-title {
+  font-weight: 600;
+  font-size: 15px;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+/* ---------- splash ---------- */
+/* Sequence: frames shown -> photo in -> zoom into centre frame -> wash to white
+   -> logo reveal -> house tour in + Start. Phase classes (.p1-.p5) are added cumulatively by Splash.tsx. */
+.splash {
+  overflow: hidden;
+  background: #fff;
+}
+/* Wall texture fills the screen for sequences 1-3, then fades out at the logo reveal (p4). */
+.sp-wall {
+  position: absolute;
+  inset: 0;
+  background: url("/assets/shared/splash/wall-texture.webp") center / cover no-repeat;
+  opacity: 1;
+  transition: opacity 800ms ease-out;
+  pointer-events: none;
+}
+.splash.p4 .sp-wall {
+  opacity: 0;
+}
+.sp-stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 390px;
+  height: 844px;
+  margin: -422px 0 0 -195px;
+  transform-origin: 50% 50%;
+}
+.sp-stage img {
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.sp-zoom {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 50%;
+  will-change: transform, opacity;
+  transition:
+    transform 1500ms cubic-bezier(0.76, 0, 0.24, 1),
+    opacity 1000ms ease-in-out;
+}
+.splash.p2 .sp-zoom {
+  transform: scale(3.2188);
+}
+.splash.p3 .sp-zoom {
+  opacity: 0.07;
+}
+
+.sp-frames {
+  position: absolute;
+  left: 0;
+  top: 262px;
+  width: 390px;
+  height: 320px;
+}
+
+.sp-family {
+  position: absolute;
+  left: 103px;
+  top: 282px;
+  width: 184.885px;
+  height: 280px;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 600ms ease-in-out;
+}
+.sp-family img {
+  position: absolute;
+  left: -9.44%;
+  top: -18.36%;
+  width: 112.43%;
+  height: 118.19%;
+  max-width: none;
+  transform: scale(1.1);
+  transition: transform 1000ms cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+.splash.p1 .sp-family {
+  opacity: 1;
+}
+.splash.p1 .sp-family img {
+  transform: none;
+}
+
+.sp-logo {
+  position: absolute;
+  opacity: 0;
+  filter: blur(6px);
+  transform: translateY(12px);
+  transition:
+    opacity 800ms ease-out,
+    filter 800ms ease-out,
+    transform 900ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.sp-modern {
+  left: 30.2px;
+  top: 401.72px;
+  width: 164.931px;
+  height: 40.563px;
+}
+.sp-fam {
+  left: 201.99px;
+  top: 392px;
+  width: 157.811px;
+  height: 60px;
+  transition-delay: 180ms;
+}
+.splash.p4 .sp-logo {
+  opacity: 1;
+  filter: none;
+  transform: none;
+}
+/* p5: "modern" and "family" glide up together (no stagger), making room for the house tour. */
+.splash.p5 .sp-logo {
+  opacity: 1;
+  filter: none;
+  transform: none;
+  transition: transform 800ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* house tour vector: slides in right -> left while fading 0% -> 100%. */
+.sp-tour {
+  position: absolute;
+  left: 202px; /* aligned under "family", per Figma */
+  top: 452px; /* directly below the family logo (392 + 60) */
+  width: 153px;
+  height: 23px;
+  opacity: 0;
+  transform: translateX(120px);
+  transition:
+    opacity 800ms ease-in-out,
+    transform 800ms cubic-bezier(0.22, 0.7, 0.2, 1);
+  pointer-events: none;
+}
+.splash.p5 .sp-tour {
+  opacity: 1;
+  transform: none;
+}
+
+.sp-start {
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 40px);
+  border: 0;
+  border-radius: 999px;
+  padding: 15px 24px;
+  background: #191818;
+  color: #fff;
+  font: 400 16px/1.2 "Inter", system-ui, sans-serif;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transform: translateY(24px);
+  pointer-events: none;
+  transition:
+    opacity 600ms ease-out,
+    transform 700ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.splash.p5 .sp-start {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.sp-start:active {
+  transform: scale(0.98);
+}
+@media (prefers-reduced-motion: reduce) {
+  .splash * {
+    transition-duration: 1ms !important;
+    transition-delay: 0s !important;
+  }
+}
+
+/* ---------- neighborhood ---------- */
+.street {
+  background: #000;
+}
+.street-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.street-layer {
+  position: absolute;
+  left: 0;
+  transform: translateX(calc(var(--sx, 0) * var(--f) * -1px));
+  will-change: transform;
+}
+.street-layer .ph {
+  border-radius: 0;
+  border-width: 0 0 0 0;
+  opacity: 0.85;
+  width: 100%;
+  height: 100%;
+}
+.street-layer .ph span {
+  position: absolute;
+  top: 8px;
+  left: 14px;
+}
+/* topbar (Figma): white back button + wordmark */
+.street .topbar {
+  justify-content: space-between;
+  pointer-events: none;
+}
+.street .topbar > * {
+  pointer-events: auto;
+}
+.icon-btn {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  padding: 0;
+  border-radius: 14px;
+  background: #fff;
+  display: grid;
+  place-items: center;
+  filter: drop-shadow(0 3.5px 4.4px rgba(0, 0, 0, 0.2));
+}
+.icon-btn img {
+  width: 11.4px;
+  height: 11.4px;
+}
+.icon-btn-spacer {
+  width: 28px;
+}
+.topbar-logo {
+  height: 20px;
+  width: auto;
+}
+
+/* ---------- Dunphy stop: layered 3D scene (Figma 31:56) ---------- */
+.street-stop.dunphy-stop {
+  position: relative;
+  padding: 0;
+  gap: 0;
+  --pg: calc(var(--sp, 0) - var(--i, 0)); /* swipe progress: 0 = centred, +1 = one page left */
+}
+.dscene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  user-select: none;
+}
+/* one continuous sky shared by every stop; Neighborhood.tsx slides it slower than the houses */
+.street-sky {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: #5bb8fb;
+}
+.street-sky-drift {
+  position: absolute;
+  inset: 0;
+  animation: sky-drift 60s ease-in-out infinite alternate;
+}
+.street-sky img {
+  display: block;
+  height: 100%;
+  width: auto;
+  min-width: calc(100% + 48px);
+  object-fit: cover;
+  max-width: none;
+  will-change: transform;
+}
+@keyframes sky-drift {
+  from { transform: translateX(0); }
+  to { transform: translateX(-48px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .street-sky-drift { animation: none; }
+}
+.dstage {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: calc(var(--plate-h, 150px) - 12px); /* tucks under the fixed plate's rounded corners */
+  container-type: inline-size;
+  perspective: 900px;
+  perspective-origin: 50% 70%;
+}
+/* trees: the only 3D layer. Bottom of the foliage is pinned to the stage bottom so it never floats. */
+.dworld {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform: rotateX(calc(var(--ty, 0) * -3deg)) rotateY(calc(var(--tx, 0) * 5deg + var(--pg) * -28deg));
+  transform-origin: 50% 100%;
+  will-change: transform;
+}
+.dl {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 100%;
+  transform: translate3d(
+      calc(var(--tx, 0) * -22px + var(--pg) * -40px),
+      calc(var(--ty, 0) * -10px),
+      var(--z)
+    )
+    scale(var(--s));
+}
+.dtrees {
+  position: absolute;
+  left: -20cqw;
+  bottom: -10.5cqw; /* the PNG has ~7.5% empty rows under the foliage */
+  width: 140cqw;
+  height: 140cqw;
+  max-width: none;
+  opacity: 0.85;
+  pointer-events: none;
+}
+/* house + characters share one box so everything stays aligned at any width (1cqw = 1% of width) */
+.dhouse {
+  position: absolute;
+  left: -6px; /* slight overscan so the tilt parallax never reveals an edge */
+  right: -6px;
+  bottom: 0;
+  z-index: 2;
+  translate: calc(var(--tx, 0) * -4px + var(--pg) * -10px) calc(var(--ty, 0) * -2px);
+  aspect-ratio: 421 / 379.5;
+  container-type: inline-size;
+}
+.dhouse-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  -webkit-user-drag: none;
+}
+.dchar {
+  position: absolute;
+  max-width: none;
+  height: auto;
+  pointer-events: none;
+  filter: drop-shadow(0 4px 4px rgba(30, 40, 10, 0.3));
+}
+.dphil {
+  translate: calc(var(--tx, 0) * -4px) calc(var(--ty, 0) * -1.5px);
+  left: 25.3cqw;
+  bottom: 14cqw;
+  width: 22.1cqw;
+}
+.dluke {
+  translate: calc(var(--tx, 0) * -6px) calc(var(--ty, 0) * -2px);
+  left: 74.7cqw;
+  bottom: 14.2cqw;
+  width: 15.2cqw;
+}
+.dluke.hurt {
+  animation: dflinch 0.35s ease-out, dbob 3.6s ease-in-out -1.4s infinite;
+}
+@keyframes dflinch {
+  0% { margin-left: 0; }
+  25% { margin-left: 1.6cqw; }
+  55% { margin-left: -0.6cqw; }
+  100% { margin-left: 0; }
+}
+/* bullet: leaves Phil's muzzle, travels to Luke, shrinks away as it lands */
+.dbullet {
+  position: absolute;
+  left: 44.1cqw;
+  bottom: 35.4cqw;
+  width: 2.4cqw;
+  height: 1.5cqw;
+  margin: -0.75cqw 0 0 -1.2cqw;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(255, 140, 40, 0), #ff8a1f 40%, #ffd37a);
+  box-shadow: 0 0 1.6cqw 0.4cqw rgba(255, 150, 40, 0.65);
+  pointer-events: none;
+  animation: dshoot 0.9s cubic-bezier(0.45, 0, 0.9, 0.6) forwards;
+}
+@keyframes dshoot {
+  0% {
+    transform: translate(0, 0) scale(0.4);
+    opacity: 0;
+  }
+  10% {
+    transform: translate(0, 0) scale(1.6);
+    opacity: 1;
+  }
+  80% {
+    transform: translate(31cqw, 5cqw) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(33cqw, 5.4cqw) scale(0.3);
+    opacity: 0;
+  }
+}
+/* Tucker-Pritchett stop (Figma 71:222): house box is 402 x 361.267, 1cqw = 4.02px at 390 wide */
+.thouse {
+  aspect-ratio: 402 / 361.267;
+}
+.ttrees {
+  left: -30.3cqw;
+  bottom: -10.7cqw;
+  opacity: 1;
+}
+.tcam {
+  translate: calc(var(--tx, 0) * -4px) calc(var(--ty, 0) * -1.5px);
+  left: 45.2cqw;
+  bottom: 8.84cqw;
+  width: 22.1cqw;
+  height: 33.15cqw;
+}
+/* bubble sits top-left of Cam; its tail tip (93% x, 96% y of the bubble) points at his head with a gap */
+.tbubble-pos {
+  position: absolute;
+  left: 21.5cqw;
+  bottom: 40.6cqw;
+  width: 30cqw;
+  z-index: 4;
+  pointer-events: none;
+  translate: calc(var(--tx, 0) * -6px) calc(var(--ty, 0) * -2px);
+}
+.tbubble {
+  position: relative;
+  aspect-ratio: 120 / 52;
+  transform-origin: 93% 96%;
+  animation: tpop 0.28s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.25));
+}
+.tbubble svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.tbubble span {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 73%; /* the rounded body; the tail takes the rest */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Fredoka", system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 5.4cqw;
+  letter-spacing: 0.02em;
+  color: #000;
+  white-space: nowrap;
+}
+@keyframes tpop {
+  from { transform: scale(0.2); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tbubble { animation: none; }
+}
+/* Pritchett stop (Figma 54:638): house box is 402 x 362.4, 1cqw = 4.02px at 390 wide */
+.phouse {
+  aspect-ratio: 402 / 362.373;
+}
+.pgloria {
+  translate: calc(var(--tx, 0) * -4px) calc(var(--ty, 0) * -1.5px);
+  left: 60.8cqw;
+  bottom: 8.8cqw;
+  width: 22.9cqw;
+  height: 34.3cqw;
+  filter: drop-shadow(0 4px 4px rgba(30, 40, 10, 0.3));
+}
+.pstella {
+  translate: calc(var(--tx, 0) * -6px) calc(var(--ty, 0) * -2px);
+  left: 9.95cqw;
+  bottom: 11.5cqw;
+  width: 12.9cqw;
+  height: 13.2cqw;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.3));
+}
+/* small ink "whack" marks above-right of the mouse, clear of Gloria and the shovel */
+.phit {
+  position: absolute;
+  left: calc(79cqw + 2px);
+  bottom: calc(15cqw + 2px);
+  width: 15cqw;
+  height: 15cqw;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+  z-index: 3;
+  pointer-events: none;
+  transform-origin: 0% 100%;
+  animation: phit 0.5s ease-out forwards;
+}
+@keyframes phit {
+  0% { transform: scale(0.3); opacity: 0; }
+  25% { transform: scale(1); opacity: 0.9; }
+  70% { transform: scale(1.06); opacity: 0.9; }
+  100% { transform: scale(1.1); opacity: 0; }
+}
+/* both poses stay mounted so the swap never flashes; only one is visible */
+.pframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: 50% 100%;
+  opacity: 0;
+  pointer-events: none;
+}
+.pframe.on {
+  opacity: 1;
+}
+.bob-a {
+  animation: dbob 4.2s ease-in-out infinite;
+}
+.bob-b {
+  animation: dbob 3.6s ease-in-out -1.4s infinite;
+}
+@keyframes dbob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-3px) rotate(0.6deg);
+  }
+}
+.dplate {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 4;
+  width: 100%;
+  background: #fff;
+  border-radius: 20px 20px 0 0;
+  padding: 18px 20px calc(24px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  filter: drop-shadow(0 -10px 10px rgba(0, 0, 0, 0.5));
+  font-family: "Inter", system-ui, sans-serif;
+}
+.dplate h2 {
+  animation: plate-title 0.35s ease both;
+  margin: 0;
+  font-weight: 300;
+  font-size: 36px;
+  letter-spacing: -3px;
+  line-height: normal;
+  color: #000;
+  white-space: nowrap;
+}
+@keyframes plate-title {
+  from { opacity: 0; transform: translateY(6px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dplate h2 { animation: none; }
+}
+.dknock {
+  width: 100%;
+  border: 0;
+  border-radius: 999px;
+  padding: 15px 24px;
+  background: #191818;
+  color: #fff;
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.2;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.15s;
+}
+.dknock:active {
+  transform: scale(0.98);
+}
+.dplate p {
+  margin: 0;
+  font-size: 14px;
+  color: #525252;
+  text-align: center;
+}
+@media (prefers-reduced-motion: reduce) {
+  .bob-a,
+  .bob-b {
+    animation: none;
+  }
+}
+
+.street-scroll {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+/* touch: no native panning; Neighborhood.tsx handles flick-to-change-house */
+@media (pointer: coarse) {
+  .street-scroll {
+    overflow-x: hidden;
+    touch-action: none;
+  }
+}
+.street-scroll::-webkit-scrollbar {
+  display: none;
+}
+.street-stop {
+  flex: 0 0 100%;
+  scroll-snap-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 90px 18px 56px;
+  gap: 14px;
+}
+.house-btn {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: none;
+  border: 0;
+  padding: 0;
+  transition: transform 0.2s;
+}
+.house-btn:active {
+  transform: scale(0.97);
+}
+.house-art {
+  position: relative;
+}
+.house-art.ph {
+  inset: 0;
+  position: absolute;
+}
+.house-btn img {
+  position: absolute;
+  inset: 0;
+  filter: drop-shadow(0 14px 14px rgba(40, 30, 10, 0.25));
+}
+.plate {
+  background: var(--card);
+  border-radius: 22px;
+  padding: 16px 18px 18px;
+  box-shadow: 0 10px 28px rgba(60, 40, 10, 0.18);
+}
+.plate h2 {
+  margin: 0;
+  font-size: 22px;
+}
+.plate p {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+.plate .blurb {
+  margin-top: 6px;
+  color: var(--ink);
+}
+.cta {
+  margin-top: 12px;
+  width: 100%;
+  border: 0;
+  border-radius: 14px;
+  padding: 12px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 16px;
+}
+.swipe-hint {
+  position: absolute;
+  bottom: 18px;
+  left: 0;
+  right: 0;
+  margin: 0;
+  text-align: center;
+  font-size: 12px;
+  color: rgba(59, 47, 36, 0.6);
+  pointer-events: none;
+}
+
+/* ---------- room postcard (Figma 82:710) ---------- */
+/* Room screens are exactly one small-viewport tall: everything stays visible, the card absorbs the slack. */
+.app:has(> .room) {
+  height: 100svh;
+}
+.room {
+  background: #fff;
+  height: 100svh;
+  overflow: hidden;
+  --gap: 40px; /* fixed spacing: top bar -> card, card -> text */
+}
+.room .topbar {
+  position: relative;
+  flex: none;
+}
+.room .topbar {
+  justify-content: space-between;
+}
+.room-logo {
+  position: relative;
+  width: 109.942px;
+  height: 20.068px;
+}
+.room-logo img {
+  position: absolute;
+  display: block;
+  max-width: none;
+}
+.rl-modern {
+  inset: 16.34% 49.99% 16.29% 0;
+  width: 50.01%;
+  height: 67.37%;
+}
+.rl-family {
+  inset: -4.79% -0.33% -4.84% 51.22%;
+  width: 49.11%;
+  height: 109.63%;
+}
+.postcard-stage {
+  flex: 1 1 0;
+  min-height: 0;
+  margin: var(--gap) 12px;
+  container-type: size;
+  display: grid;
+  place-items: center;
+  perspective: 900px;
+  filter: drop-shadow(0 20px 20px rgba(0, 0, 0, 0.3)); /* on the stage so the postcard's mask doesn't clip it */
+}
+.postcard {
+  position: relative;
+  aspect-ratio: 354 / 500;
+  width: min(420px, 100cqw, calc(100cqh * 354 / 500)); /* shrinks to whatever fits; keeps the 354:500 ratio */
+  container-type: inline-size;
+  border-radius: 28px;
+  overflow: hidden;
+  isolation: isolate; /* Safari: keep transformed children inside the rounded clip */
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  background: color-mix(in srgb, var(--wall, #f3e3c3) 62%, #fff);
+  transform: rotateY(calc(var(--tx, 0) * 9deg)) rotateX(calc(var(--ty, 0) * -9deg));
+  animation: card-in 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+  will-change: transform;
+}
+.postcard::after {
+  /* white frame drawn on top so the art is clipped by the outer radius, not the border's inner edge */
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 4px solid #fff;
+  border-radius: 28px;
+  pointer-events: none;
+  z-index: 10;
+}
+.layer {
+  position: absolute;
+  inset: 0;
+  transform: translate(calc(var(--tx, 0) * var(--k)), calc(var(--ty, 0) * var(--k))) scale(1.14);
+  will-change: transform;
+}
+.layer .placed {
+  position: absolute;
+  max-width: none;
+  pointer-events: none;
+}
+.layer .pose {
+  opacity: 0;
+}
+.layer .pose.on {
+  opacity: 1;
+}
+.speech {
+  position: absolute;
+  left: var(--bx);
+  top: var(--by);
+  z-index: 5;
+  pointer-events: none;
+  animation: speech-life 1.8s ease-out forwards;
+}
+.speech-bubble {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 27.7cqw; /* 98px on the full 354px card */
+  height: auto;
+  overflow: visible;
+  transform: translate(-50%, -42%);
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.18));
+  animation: bubble-pop 0.35s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+.note {
+  position: absolute;
+  font-size: 18px;
+  line-height: 1;
+  color: #fff;
+  opacity: 0;
+  text-shadow: -1px 0 #000, 1px 0 #000, 0 -1px #000, 0 1px #000, 0 2px 3px rgba(0, 0, 0, 0.3);
+  animation: note-float 1.5s ease-out forwards;
+}
+.note.n1 { left: -76px; top: -34px; animation-delay: 0.1s; }
+.note.n2 { left: -90px; top: -6px; animation-delay: 0.3s; }
+.note.n3 { left: -58px; top: -54px; animation-delay: 0.5s; }
+@keyframes speech-life {
+  0%, 70% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes bubble-pop {
+  from { transform: translate(-50%, -42%) scale(0.4); opacity: 0; }
+  to { transform: translate(-50%, -42%) scale(1); opacity: 1; }
+}
+@keyframes note-float {
+  0% { opacity: 0; transform: translateY(6px) rotate(-8deg); }
+  25% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-22px) rotate(10deg); }
+}
+.glare {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at calc(50% + var(--tx, 0) * 45%) calc(30% + var(--ty, 0) * 30%),
+    rgba(255, 255, 255, 0.4),
+    transparent 55%
+  );
+  mix-blend-mode: soft-light;
+}
+.room-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+  padding: 0 20px 16px;
+  text-align: center;
+}
+.room-meta p {
+  margin: 0;
+  font: 400 16px/normal "Inter", system-ui, sans-serif;
+  letter-spacing: -0.48px;
+  color: #7a6a58;
+}
+.room-meta h2 {
+  margin: 0;
+  font: 300 32px/normal "Inter", system-ui, sans-serif;
+  letter-spacing: -2.7px;
+  color: #000;
+}
+.chips {
+  display: flex;
+  justify-content: center;
+  padding: 0 16px calc(env(safe-area-inset-bottom, 0px) + 32px);
+}
+.chips-track {
+  display: flex;
+  align-items: center;
+  max-width: 100%;
+  padding: 5px;
+  border-radius: 200px;
+  background: #d4d4d4;
+  overflow-x: auto;
+  scrollbar-width: none;
+  position: relative;
+}
+.chip-pill {
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  left: 0;
+  width: var(--pw, 0);
+  border-radius: 999px;
+  background: #fff;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.1));
+  transform: translateX(var(--px, 0));
+  pointer-events: none;
+}
+.chip-pill.anim {
+  /* iOS segmented-control feel: springy slide with a slight overshoot */
+  transition:
+    transform 0.45s cubic-bezier(0.32, 1.25, 0.5, 1),
+    width 0.45s cubic-bezier(0.32, 1.25, 0.5, 1);
+}
+.chips-track::-webkit-scrollbar {
+  display: none;
+}
+.chip {
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 999px;
+  padding: 9px 14px;
+  background: transparent;
+  font: 500 14px/normal "Inter", system-ui, sans-serif;
+  color: #525252;
+  white-space: nowrap;
+  position: relative;
+  z-index: 1;
+  transition: color 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.chip.on {
+  color: #000;
+}
+.chip:active {
+  opacity: 0.6;
+}
+
+@keyframes float {
+  50% {
+    transform: translateY(-8px);
+  }
+}
+@keyframes pulse {
+  50% {
+    transform: scale(1.05);
+  }
+}
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: perspective(900px) rotateY(-70deg) scale(0.9);
+  }
+}
+
+/* intro overlay: dark scrim + swiping hand, shown 2s after the splash then fades */
+.swipe-intro {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  background: rgba(15, 12, 10, 0.62);
+  color: #fff;
+  font: 500 16px/1 "Inter", system-ui, sans-serif;
+  letter-spacing: -0.2px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+.swipe-intro.on {
+  opacity: 1;
+  pointer-events: auto;
+}
+.swipe-hand {
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35));
+}
+.swipe-intro.on .swipe-hand {
+  animation: swipe-hand 1.1s ease-in-out infinite;
+}
+@keyframes swipe-hand {
+  0%,
+  100% {
+    transform: translateX(26px) rotate(8deg);
+  }
+  50% {
+    transform: translateX(-26px) rotate(-8deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .swipe-intro.on .swipe-hand {
+    animation: none;
+  }
+}
+
+/* house counter (Figma 76:356): white pill, sits on the art just above the plate */
+.street-dots {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--plate-h, 150px) + 14px);
+  z-index: 3;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 4px;
+  border-radius: 200px;
+  background: #fff;
+}
+.street-dots button {
+  position: relative;
+  width: 5px;
+  height: 5px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #d4d4d4;
+}
+.street-dots button.on {
+  background: #737373;
+}
+/* bigger tap target than the 5px dot */
+.street-dots button::after {
+  content: "";
+  position: absolute;
+  inset: -8px -3px;
+}
