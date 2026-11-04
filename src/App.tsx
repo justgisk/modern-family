@@ -22,6 +22,14 @@ export default function App() {
     if (screen === "street") preload(roomUrls());
   }, [screen]);
 
+  // Tint the iPhone browser bars: cream on splash, sky blue on street, white in a room.
+  useEffect(() => {
+    const color = screen === "street" ? "#5bb8fb" : screen === "room" ? "#ffffff" : "#fff4dc";
+    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", color);
+    document.documentElement.style.background = color;
+    document.body.style.background = color;
+  }, [screen]);
+
   return (
     <div className="app">
       {screen === "splash" && (
